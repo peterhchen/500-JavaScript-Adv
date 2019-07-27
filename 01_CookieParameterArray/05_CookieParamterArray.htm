@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+    // This example set size (n) to cookie and then set Cookie data with specified key "P1", ..."Pn"
+    // From another URL page, it takes the size first and get the data out with "P1", ..., "Pn"
+    // Yout run with Visual Studio Code and run with "Open Live Server"
+    //https://stackoverflow.com/questions/4470477/create-array-in-cookie-with-javascript
+    function setCookie(cname,cvalue,exdays) {
+        console.log ('cname:', cname, 'cvalue: ', cvalue, 'exdays:', exdays)
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires=" + d.toGMTString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    function myfunction() {
+        /* b = [
+            {key: "k1", value: "v1"}, 
+            {key: "k2", value: "v2"},
+            {key: "k3", value: "v3"}
+        ];
+
+        // need to translate into
+        data = ["P1", "k1", "P2", "v1", "P3", "k2", "P4", "v2", "P5", "k3", "P6", "v3"];
+        */
+        data = ["P1", "k1", "P2", "v1", "P3", "k2", "P4", "v2", "P5", "k3", "P6", "v3"];
+        // size = 6 data (k1, v1, k2, v2, k3, v3). Each data need a cookie header
+        size = 6
+        setCookie("Param", size, 10);  // set param=6 for 10 days
+        for(var i = 0; i < size * 2; i = i + 2){
+            setCookie(data[i], data[i + 1], 10); // set P1=k1; P2=v1; P3=k2; P4=v2; P5=k3; P6=v3
+        }
+
+        var cSize = getCookie("Param"); // get Param=6
+        console.log ('cSize: ', cSize);
+        var b = [];
+        for (var i = 1; i <= cSize; i = i + 2){
+            p1 = "P" + i;
+            console.log ('p1:', p1) // Get P1=, P3=, P5=, etc.
+            b.push(getCookie(p1));
+            p2 = "P" + parseInt (i + 1);
+            console.log ('p2:', p2); // Get P2=, P4=, P6= etc.
+            b.push(getCookie(p2));
+        }
+        for (var i = 0; i < b.length; i++) {
+            console.log ('b['+ i + ']:', b[i]); // b[0]=k1, b[1]=v1, k[2]=k2, k[3]=v2, b[4]=k3, b[5]=v[3]
+        }
+        return b;
+    }
+</script>
+</head>
+<body>
+<h1>JavaScript Cookie</h1>
+
+<button type="button"
+onclick="document.getElementById('demo').innerHTML = myfunction()">
+Click me for Cookie.</button>
+
+<p id="demo"></p>
+</body>
+
+</html>
